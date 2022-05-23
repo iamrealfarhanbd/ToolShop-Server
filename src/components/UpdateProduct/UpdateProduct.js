@@ -13,7 +13,7 @@ const UpdateProduct = () => {
     const [products,setProducts] = useState([])
 
     useEffect( () =>{
-        const url = `https://ebazzar-warehouse.herokuapp.com/product/${id}`;
+        const url = `http://localhost:5000/product/${id}`;
         fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -24,7 +24,7 @@ const UpdateProduct = () => {
 
     const onSubmit = data => {
         // console.log(data);
-        const url = `https://ebazzar-warehouse.herokuapp.com/product/${id}`;
+        const url = `http://localhost:5000/product/${id}`;
         fetch(url, {
             method: 'PUT',
             headers: {
