@@ -79,6 +79,7 @@ async function run() {
     const userCollection = client.db('toolShop').collection('users');
     const orderCollection = client.db('toolShop').collection('orders');
     const paymentCollection = client.db('toolShop').collection('payment');
+    const reviewCollection = client.db('toolShop').collection('review');
 
     const verifyAdmin = async (req, res, next) => {
       const requester = req.decoded.email;
@@ -115,6 +116,22 @@ async function run() {
       res.send(result);
     });
 
+
+    // POST review
+    app.get('/review', async (req, res) => {
+      const query = {};
+      const cursor = reviewCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // POST review
+    app.post('/review', async (req, res) => {
+      const newtool = req.body;
+      const result = await reviewCollection.insertOne(newtool);
+      res.send(result);
+    });
+
     // app.put('/updateTool/:id', async (req, res) => {
     //   const updatedtool = req.body;
     //   const { updatedQuantity } = updatedtool;
@@ -143,9 +160,15 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/user', verifyJWT, async (req, res) => {
+    app.get('/users', verifyJWT, async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
+    });
+    app.get('/user', verifyJWT, async (req, res) => {
+      const email = req.query.email;
+        const query = { email: email };
+      const user = await userCollection.findOne(query);
+      res.send(user);
     });
 
     app.get('/admin/:email', async (req, res) => {
@@ -177,6 +200,7 @@ async function run() {
       const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' })
       res.send({ result, token });
     });
+
     app.delete('/user/:email', verifyJWT, async (req, res) => {
       const email = req.params.email;
       const filter = {email: email};
@@ -208,12 +232,33 @@ async function run() {
       res.send({ clientSecret: paymentIntent.client_secret });
     });
 
+     // order  API
+     app.get('/orders', async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const order = await cursor.toArray();
+      res.send(order);
+    });
     // My order Collection API 
     app.get('/order/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const orders = await orderCollection.findOne(query);
       res.send(orders);
+
+    })
+    // My order Collection API  Patch
+    app.patch('/order/:id', verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          Shipped: true,
+        },
+      };
+      const updateOrder = await orderCollection.updateOne(filter, updateDoc);
+      console.log(updateOrder);
+      res.send(updateOrder);
 
     })
 
