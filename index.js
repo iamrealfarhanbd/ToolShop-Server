@@ -132,25 +132,7 @@ async function run() {
       res.send(result);
     });
 
-    // app.put('/updateTool/:id', async (req, res) => {
-    //   const updatedtool = req.body;
-    //   const { updatedQuantity } = updatedtool;
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const options = { upsert: true };
 
-    //   const updateTool = {
-    //     $set: {
-    //       quantity: updatedQuantity
-    //     },
-    //   };
-
-    //   const result = await toolsCollection.updateOne(query, updateTool, options);
-    //   console.log(result);
-
-    //   res.send(result);
-
-    // });
 
     // DELETE tool
     app.delete('/tool/:id', async (req, res) => {
@@ -209,13 +191,7 @@ async function run() {
     })
 
 
-    // app.put('/user/', async (req, res) => {
-    //   const user = req.body;
-    //   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    //     expiresIn: '1d'
-    //   });
-    //   res.send({ accessToken });
-    // });
+
 
 
     app.post('/create-payment-intent', verifyJWT, async (req, res) => {
@@ -248,7 +224,7 @@ async function run() {
 
     })
     // My order Collection API  Patch
-    app.patch('/order/:id', verifyJWT, async (req, res) => {
+    app.patch('/orders/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const updateDoc = {
